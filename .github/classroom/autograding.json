@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "Notebook solution.ipynb ada",
+      "setup": "",
+      "run": "test -f notebooks/solution.ipynb && echo 'OK'",
+      "input": "",
+      "output": "OK",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "EXPERIMENTS.md sudah diisi (>1000 karakter)",
+      "setup": "",
+      "run": "test $(wc -c < EXPERIMENTS.md) -gt 1000 && echo 'OK'",
+      "input": "",
+      "output": "OK",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "REFLECTION.md sudah diisi (>800 karakter)",
+      "setup": "",
+      "run": "test $(wc -c < REFLECTION.md) -gt 800 && echo 'OK'",
+      "input": "",
+      "output": "OK",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 10
+    },
+    {
+      "name": "TEAM.md sudah diisi",
+      "setup": "",
+      "run": "grep -q 'Nama Lengkap' TEAM.md && test $(wc -l < TEAM.md) -gt 10 && echo 'OK'",
+      "input": "",
+      "output": "OK",
+      "comparison": "included",
+      "timeout": 5,
+      "points": 5
+    }
+  ]
+}
