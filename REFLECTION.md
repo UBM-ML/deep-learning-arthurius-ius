@@ -8,11 +8,11 @@
 
 **Jawaban:**
 
-> **Parameter** adalah nilai-nilai yang dipelajari secara otomatis oleh model selama proses training — dalam kasus kami, ini adalah **bobot (weights)** dan **bias** di setiap layer jaringan saraf. Nilai-nilai ini awalnya diinisialisasi secara acak, lalu terus diperbarui oleh algoritma backpropagation di setiap iterasi.
+> **Parameter** adalah nilai yang dipelajari model secara otomatis selama training — yaitu **bobot (weights)** dan **bias** di setiap layer. Nilai ini diinisialisasi acak di awal, lalu diperbarui ribuan kali oleh backpropagation berdasarkan gradien loss.
 >
-> **Hyperparameter** adalah nilai yang **kami tentukan sendiri sebelum training dimulai** dan tidak berubah selama proses berjalan. Contohnya: `learning rate`, `batch size`, `jumlah epochs`, `jumlah unit per layer`, dan `jumlah hidden layer`.
+> **Hyperparameter** adalah nilai yang **kami tentukan sendiri sebelum training dimulai** dan tidak berubah selama proses berjalan. Dalam eksperimen kami, hyperparameter yang divariasikan antara lain: `learning rate` (0.01 / 0.001), `optimizer` (SGD / Adam / Adamax), `jumlah hidden layer` (1 / 2), `neurons per layer` (64 / 128), `fungsi aktivasi` (ReLU / ELU / Sigmoid), `dropout rate` (0.0 / 0.2), dan `jumlah epochs` (10 / 20).
 >
-> Singkatnya: parameter berubah saat training berjalan (dioptimasi oleh model), sedangkan hyperparameter adalah "pengaturan mesin" yang kami pilih manual sebelum menekan tombol train.
+> Singkatnya: parameter berubah *selama* training dioptimasi oleh model, sedangkan hyperparameter adalah "konfigurasi mesin" yang kami pilih *sebelum* training dimulai.
 
 ---
 
@@ -20,9 +20,9 @@
 
 **Jawaban:**
 
-> Menurut pengamatan kami, **learning rate** memiliki dampak paling besar terhadap akurasi dan stabilitas training. Ketika learning rate terlalu besar, kurva loss melonjak tidak stabil bahkan divergen. Ketika terlalu kecil, loss turun sangat lambat dan model butuh epoch jauh lebih banyak untuk konvergen.
+> Berdasarkan eksperimen kami, **kombinasi arsitektur dan learning rate** memberikan dampak terbesar. Eksperimen #4 (2 hidden layer, 128 neuron, LR 0.001, Adam, 20 epoch, Dropout 0.2) menghasilkan akurasi tertinggi **88.33%** — naik signifikan dari baseline #0 yang hanya **85.11%**.
 >
-> Selain itu, **jumlah hidden layer dan unit** juga sangat berpengaruh — menambah kapasitas model membantu menangkap pola yang lebih kompleks pada Fashion-MNIST, yang terlihat dari kurva training accuracy yang lebih tinggi. Namun jika terlalu besar tanpa regularisasi, validation accuracy mulai tertinggal (overfitting).
+> Sebaliknya, Eksperimen #3 membuktikan dampak learning rate: hanya dengan menurunkan LR dari 0.01 → 0.001 tanpa perubahan lain, akurasi justru **turun menjadi 80.64%** karena model tidak punya cukup epoch untuk konvergen. Ini menunjukkan bahwa learning rate tidak bisa diisolasi — ia berinteraksi erat dengan jumlah epoch. Kurva loss pada #3 masih menurun di epoch akhir, menandakan model belum konvergen.
 
 ---
 
@@ -30,11 +30,11 @@
 
 **Jawaban:**
 
-> Ketika kami set `LEARNING_RATE = 1.0`, kurva loss **tidak turun secara konsisten** — malah naik-turun drastis dan tidak stabil. Pada beberapa eksperimen, loss bahkan menjadi `NaN` (divergen).
+> Dari Eksperimen #3 (LR = 0.001, hanya 10 epoch), kurva loss turun sangat lambat dan stabil, tetapi belum mencapai titik minimum — akurasi tertahan di 80.64%. Ini adalah efek LR terlalu kecil untuk durasi training yang singkat.
 >
-> Ini sesuai dengan rumus:
+> Mengacu pada rumus:
 > $$W_j = W_j - \lambda \frac{\partial F(W_j)}{\partial W_j}$$
-> Jika $\lambda$ (learning rate) terlalu besar, setiap pembaruan bobot "melompat" terlalu jauh melampaui titik minimum loss. Model tidak pernah berhasil "mendarat" di lembah optimal — ia terus berosilasi atau bahkan bergerak menjauhi solusi. Ibarat mencari titik terendah lembah tapi melangkah terlalu besar sehingga malah loncat ke bukit seberang.
+> Jika $\lambda$ terlalu kecil, setiap langkah pembaruan bobot sangat kecil sehingga model butuh jauh lebih banyak iterasi untuk konvergen. Sebaliknya, jika $\lambda$ terlalu besar (misalnya 1.0), model melompat terlalu jauh melewati titik minimum — loss akan melonjak tidak stabil, bahkan bisa divergen. Eksperimen #4 menemukan keseimbangan: LR 0.001 tetapi dikompensasi dengan epoch yang lebih banyak (20), menghasilkan kurva loss yang halus dan konvergensi yang lebih dalam.
 
 ---
 
@@ -42,13 +42,13 @@
 
 **Jawaban:**
 
-> | Aspek | Batch Size Kecil (16) | Batch Size Besar (256) |
-> |---|---|---|
-> | Waktu training | Lebih lambat per epoch | Lebih cepat per epoch |
-> | Stabilitas loss | Fluktuatif / noisy | Lebih smooth dan stabil |
-> | Akurasi akhir | Sedikit lebih tinggi | Sedikit lebih rendah / comparable |
+> Seluruh eksperimen kami menggunakan batch size 32, sehingga perbandingan langsung antar batch size tidak kami lakukan secara eksplisit. Namun dari observasi kurva loss di semua eksperimen, batch size 32 terbukti menghasilkan kurva yang cukup stabil.
 >
-> Pengamatan ini **sesuai dengan teori**: batch kecil menghasilkan gradient yang lebih "noisy" (karena dihitung dari sedikit sampel), tapi noise ini justru bisa membantu model keluar dari local minima. Batch besar memberikan estimasi gradient yang lebih akurat tapi berisiko terjebak di local minima yang tajam dan membutuhkan lebih banyak memori GPU.
+> Berdasarkan teori:
+> - **Batch size kecil (misal 16):** gradient dihitung dari sedikit sampel → lebih *noisy*, kurva loss berfluktuasi, tetapi noise ini bisa membantu keluar dari local minima.
+> - **Batch size besar (misal 256):** gradient lebih akurat dan stabil, kurva loss lebih mulus, tetapi berisiko terjebak di local minima yang tajam dan butuh memori lebih besar.
+>
+> Pengamatan ini konsisten dengan teori di slide kuliah. Batch size 32 berada di titik tengah yang seimbang antara stabilitas dan kecepatan konvergensi.
 
 ---
 
@@ -56,11 +56,11 @@
 
 **Jawaban:**
 
-> Pada salah satu eksperimen kami dengan **60.000 sampel training**, **batch size = 32**, dan **epochs = 20**:
+> Mengambil **Eksperimen #4** sebagai contoh (Fashion-MNIST: 60.000 sampel training, batch size = 32, epochs = 20):
 >
 > $$\text{Jumlah backprop} = \frac{60.000}{32} \times 20 = 1.875 \times 20 = \textbf{37.500 kali}$$
 >
-> Setiap iterasi backpropagation, **semua bobot dan bias diperbarui** menggunakan gradien dari loss. Di iterasi pertama, bobot masih hampir acak dan loss sangat tinggi. Di iterasi terakhir, bobot sudah "terpahat" untuk memetakan fitur piksel ke label kategori pakaian dengan jauh lebih presisi — loss rendah dan pola seperti tekstur, tepi, dan bentuk sudah terekam dalam parameter model.
+> Di **iterasi pertama**, bobot dan bias masih hampir acak — loss sangat tinggi dan prediksi model nyaris asal tebak. Di **iterasi terakhir** setelah 37.500 kali pembaruan, bobot sudah "terpahat" secara presisi: setiap neuron telah belajar merespons pola tertentu seperti tepi, tekstur, atau bentuk pakaian. Hasilnya, train accuracy mencapai 90.14% dan test accuracy 88.33% — jauh dari kondisi acak di awal.
 
 ---
 
@@ -68,9 +68,11 @@
 
 **Jawaban:**
 
-> Fashion-MNIST **bisa** diselesaikan dengan machine learning klasik — Logistic Regression dan Random Forest pun mampu mencapai akurasi ~85-88%. Namun deep learning (CNN khususnya) mencapai >92% karena mampu belajar **fitur hierarkis** secara otomatis: tepi → tekstur → bentuk → objek, tanpa feature engineering manual.
+> Dari eksperimen kami, bahkan arsitektur MLP sederhana (1 layer, 64 neuron) sudah mencapai 85.11% — angka yang juga bisa dicapai oleh model ML klasik seperti Logistic Regression atau SVM. Ini menunjukkan Fashion-MNIST **tidak mutlak membutuhkan** deep learning.
 >
-> Argumen kami: untuk dataset gambar berskala besar dan tugas klasifikasi visual yang kompleks, deep learning lebih tepat karena skalabilitas dan kemampuannya mengekstrak representasi otomatis. Untuk dataset kecil atau fitur tabular, ML klasik sering lebih efisien dan lebih mudah diinterpretasi.
+> Namun, peningkatan ke arsitektur lebih dalam (Eksperimen #4: 2 layer, 128 neuron) mengangkat akurasi ke 88.33% tanpa feature engineering manual — deep learning belajar representasi hierarkis (tepi → tekstur → bentuk) secara otomatis. Eksperimen #5 juga menunjukkan bahwa pilihan arsitektur yang salah (Sigmoid pada jaringan dalam) justru menurunkan performa akibat vanishing gradient.
+>
+> **Kesimpulan:** Untuk Fashion-MNIST, ML klasik bisa menjadi solusi yang lebih cepat dan ringan. Deep learning lebih tepat ketika data berdimensi tinggi, fiturnya implisit (sulit direkayasa manual), dan ada kebutuhan untuk skalabilitas ke dataset yang lebih besar dan kompleks.
 
 ---
 
@@ -78,8 +80,8 @@
 
 **Jawaban:**
 
-> **Tantangan terbesar:** Memilih kombinasi hyperparameter yang tepat tanpa tahu "titik mulai" yang baik — trial and error membutuhkan waktu dan kadang hasilnya tidak konsisten antar run karena inisialisasi acak.
+> **Tantangan terbesar:** Menyadari bahwa hyperparameter tidak bisa dioptimasi secara terpisah. Eksperimen #3 mengajarkan kami bahwa menurunkan learning rate saja justru menurunkan akurasi — butuh kompensasi berupa epoch lebih banyak, seperti yang berhasil di Eksperimen #4. Mencari keseimbangan antar hyperparameter ini membutuhkan intuisi yang hanya datang dari banyak percobaan.
 >
-> **Pelajaran terpenting:** Tidak ada satu hyperparameter pun yang bisa dioptimasi secara isolasi — semuanya saling berinteraksi. Learning rate yang bagus untuk batch size 32 bisa gagal total di batch size 256.
+> **Pelajaran terpenting:** Observasi kurva loss dan accuracy jauh lebih informatif daripada sekadar melihat angka akurasi akhir. Dari kurva, kami bisa mendeteksi apakah model belum konvergen (loss masih turun di epoch akhir seperti #3), sudah overfitting (validation loss naik), atau sudah seimbang seperti #4. Eksperimen #5 juga mengajarkan bahwa fungsi aktivasi Sigmoid rentan *vanishing gradient* pada jaringan lebih dalam, terlihat dari kurva yang lebih datar dan akurasi yang tidak melampaui baseline ReLU.
 >
-> **Jika ada waktu lebih:** Kami ingin mencoba **learning rate scheduler** (menurunkan learning rate secara bertahap) dan **dropout** untuk melihat apakah overfitting bisa dikurangi secara signifikan, serta membandingkan performa MLP vs CNN pada dataset yang sama.
+> **Jika ada waktu lebih:** Kami ingin mencoba **learning rate scheduler** (menurunkan LR secara bertahap saat training berjalan), eksperimen dengan batch size berbeda (16 dan 256) untuk memvalidasi teori secara langsung, serta mencoba arsitektur **CNN** untuk melihat seberapa besar lompatan akurasi yang bisa dicapai dibanding MLP pada data gambar ini.
