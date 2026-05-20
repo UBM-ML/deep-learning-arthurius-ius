@@ -16,7 +16,7 @@ Isi tabel ini setelah selesai semua eksperimen.
 | 1 | 1      | 64      | relu       | adam      | 0.01   | 32    | 10     | 0.0     | 85.14%   | 59.0s      |
 | 2 | 1      | 64      | elu        | adamax    | 0.01   | 32    | 10     | 0.0     | 86.84%   | 60s        |
 | 3 | 1      | 64      | relu       | sgd       | 0.001  | 32    | 10     | 0.0     | 80.64%   | 45.9s      |
-| 4 | 1      | 64      | tanh       | rmsprop   | 0.001  | 32    | 10     | 0.0     | 87.63%   | 55.3s      |
+| 4 | 2      | 128      | relu       | adam   | 0.001  | 32    | 20     | 0.2     | 88.33%   | 158.2s      |
 | 5 | 2      | 64      | sigmoid    | adam      | 0.01   | 32    | 10     | 0.2     | 84.41%   | 61.5s      |
 
 > **Eksperimen #0** = baseline (jangan ubah, ini patokan kalian).
@@ -94,22 +94,27 @@ Apakah overfit/underfit? Tidak (Perfect Good Fit, namun belum konvergen maksimal
 ### Eksperimen #4
 
 **Apa yang diubah:**
-> Mengubah fungsi aktivasi dari relu menjadi tanh, mengganti optimizer dari sgd menjadi rmsprop, serta menurunkan learning rate dari 0.01 menjadi 0.001. Hyperparameter lainnya tetap dipertahankan seperti Eksperimen #0.
+> Menambah jumlah hidden layer dari 1 menjadi 2.
+> Menambah jumlah neurons dari 64 menjadi 128.
+> Menambahkan Dropout rate: 0.2.
+> Mengganti optimizer dari sgd menjadi adam.
+> Menurunkan learning rate dari 0.01 menjadi 0.001.
+> Menambah jumlah epochs dari 10 menjadi 20.
 
 **Hipotesis:**
-> Kombinasi fungsi aktivasi tanh (yang memiliki rentang output berkelanjutan antara -1 hingga 1) dan optimizer adaptif rmsprop diprediksi akan mempercepat konvergensi model dan mengeksplorasi fitur data dengan lebih sensitif. Hasil akurasi akhir diperkirakan akan melampaui baseline sgd pada Eksperimen #0 dalam jumlah epoch yang sama.
+> Meningkatkan kedalaman (layers) dan lebar (neurons) jaringan akan memberikan kapasitas yang lebih besar bagi model untuk mempelajari fitur kompleks. Penggunaan Dropout (0.2) dan penurunan learning rate (0.001) diprediksi akan menjaga stabilitas model agar tidak overfitting meskipun jumlah epoch ditambah menjadi 20.
 
 **Hasil:**
-- Test accuracy: 87.63% (naik signifikan dari 85.11% pada Eksperimen #0)
-- Train accuracy: 90.53%
-- Validation accuracy: 88.22%
-- Train time: 55.3 detik
-- Overfitting Ringan 
+- Test accuracy: 88.33% (naik signifikan dari 85.11% pada Eksperimen #0)
+- Train accuracy: 90.14%
+- Validation accuracy: 88.85%
+- Train time: 158.2 detik
+- Tidak Overfitting 
 
 **Observasi:**
-> Peningkatan Akurasi yang Signifikan: Eksperimen ini sukses memecahkan rekor akurasi tertinggi baru sebesar 87.63% (naik sekitar 2.5% dari Eksperimen #0). Kombinasi tanh + rmsprop terbukti jauh lebih agresif dan efektif dalam mengekstrak pola data dibanding relu + sgd.
-> Muncul Jarak (Gap) Latihan: Berbeda dengan Eksperimen #0 yang kurvanya sangat rapat, di sini mulai terlihat celah (gap) yang melebar antara data Train dan Validation. Pada grafik akurasi (kanan), akurasi train (biru) terus melesat naik hingga 90.53%, sedangkan akurasi validation (oranye) mulai mendatar (stagnan) di angka 88.22% sejak Epoch 5.
-> Indikasi Grafik Loss: Grafik validation loss (oranye) tidak naik ekstrem, melainkan mendatar (plateau) di angka ~0.32, sementara train loss terus turun. Ini menandakan model mulai mencapai batas kemampuan generalisasinya dengan arsitektur saat ini dan mulai berisiko overfit jika epoch ditambah.
+> Eksperimen ini berhasil mencapai akurasi tertinggi sejauh ini (88.33%), membuktikan bahwa arsitektur yang lebih dalam dan lebar (2 layer, 128 neuron) sangat efektif untuk dataset ini.
+> Berbeda dengan eksperimen sebelumnya yang akurasinya tinggi tapi gap-nya lebar, penggunaan Dropout 0.2 di sini berhasil mengunci jarak antara Train dan Validation tetap tipis (~1.29%).
+> Penurunan learning rate ke 0.001 membuat kurva loss turun dengan sangat halus (tanpa zigzag ekstrem). Penambahan menjadi 20 epoch memberikan waktu bagi model untuk mencapai titik konvergensi yang lebih dalam.
 
 ---
 
