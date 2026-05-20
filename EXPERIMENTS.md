@@ -61,10 +61,10 @@ Gunakan template di bawah untuk SETIAP eksperimen.
 Optimizer adaptif akan membuat training lebih cepat dan akurasi lebih tinggi.
 
 **Hasil:**
-> TEST ACCURACY  : 86.84%
-> Test loss      : 0.3973
-> Train accuracy : 90.80%
-> Val accuracy   : 87.88%
+>Test accuracy  : 86.84%
+>Test loss      : 0.3973
+>Train accuracy : 90.80%
+>Val accuracy   : 87.88%
 
 **Observasi:**
 > Adamax meningkatkan akurasi sedikit. Training time naik karena adaptif optimizer lebih kompleks.
