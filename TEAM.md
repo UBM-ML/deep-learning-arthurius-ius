@@ -8,11 +8,11 @@
 
 | Nama Lengkap | NIM | Role | GitHub Username |
 |---|---|---|---|
-| Ryan | 32230019 | Lead / Coder |  |
+| Ryan | 32230019 | Lead / Coder | 32230031 |
 | Jason | 32230017 | Experiment logger | EthereaL1011 |
 | Christopher | 32230031 | Reflection writer | Chrisyesaya |
-| William | 32230028 | Presenter |  |
-| Arthur | 32230001 | Assistant |  |
+| William | 32230028 | Presenter | WilliamSantoso12 |
+| Arthur | 32230001 | Assistant | 32230001 |
 
 > Role di atas hanya saran agar pembagian kerja jelas — boleh disesuaikan dengan tim kalian.
 
