@@ -23,5 +23,5 @@ Tuliskan secara jujur kontribusi masing-masing anggota:
 - Ryan: Memimpin koordinasi tim, merancang arsitektur model Machine Learning, dan bertanggung jawab penuh atas penulisan kode utama (coding).
 - Jason: Melakukan pencatatan (logging) setiap eksperimen model (seperti tuning hyperparameter dan metrik evaluasi) serta mengelola repositori GitHub kelompok.
 - Christopher: Menyusun dokumen refleksi tim, menulis laporan analisis kendala, serta mendokumentasikan pembelajaran yang didapat selama proyek.
-- William: Pembicara utama saat memaparkan hasil proyek di depan kelas.
+- William: Pembicara utama saat memaparkan hasil proyek, terutama hasil data eksperimen di depan kelas.
 - Arthur: Membantu proses preprocessing data awal, mendukung validasi hasil eksperimen, dan memastikan seluruh kebutuhan teknis anggota lain terpenuhi.
