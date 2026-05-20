@@ -12,8 +12,8 @@
 | Jason | 32230017 | Experiment logger | EthereaL1011 |
 | Christopher | 32230031 | Reflection writer | Chrisyesaya |
 | William | 32230028 | Presenter | WilliamSantoso12 |
-| Juan | 32230043 | Reflection writer | 32230001 |
-| Arthur | 32230001 | Assistant | 32230001 |
+| Juan | 32230043 | Reflection writer | 32230043 |
+| Arthur | 32230001 | Assistant | ArthuriusBillion |
 
 > Role di atas hanya saran agar pembagian kerja jelas — boleh disesuaikan dengan tim kalian.
 
