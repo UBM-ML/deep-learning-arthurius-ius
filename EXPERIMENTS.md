@@ -148,14 +148,14 @@ Apakah overfit/underfit? Tidak (Perfect Good Fit, namun belum konvergen maksimal
 Setelah semua eksperimen, salin konfigurasi terbaik kalian ke sini:
 
 ```python
-HIDDEN_LAYERS     = 1
-NEURONS_PER_LAYER = 64
-ACTIVATION        = tanh
-DROPOUT_RATE      = 0.0
-OPTIMIZER         = rmsprop
+HIDDEN_LAYERS     = 2
+NEURONS_PER_LAYER = 128
+ACTIVATION        = relu
+DROPOUT_RATE      = 0.2
+OPTIMIZER         = adam
 LEARNING_RATE     = 0.001
 BATCH_SIZE        = 32
-EPOCHS            = 10
+EPOCHS            = 20
 ```
 
-**Test accuracy final: 87.63%**
+**Test accuracy final: 88.33%**
